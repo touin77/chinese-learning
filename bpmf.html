@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>學台灣注音</title>
+  <style>
+    body { font-family: "Microsoft JhengHei", Arial, sans-serif; padding: 20px; background: #fff8e1; }
+    h1 { color: #f57c00; }
+    .zhuyin-grid {
+      display: flex; flex-wrap: wrap; gap: 20px; max-width: 800px;
+    }
+    .card {
+      width: 100px; padding: 10px;
+      background: #ffecb3;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .card:hover {
+      background-color: #ffd54f;
+    }
+    .zhuyin { font-size: 40px; }
+    .pinyin { font-size: 18px; color: #444; }
+    .jp { font-size: 16px; color: #666; }
+  </style>
+</head>
+<body>
+
+<h1>台湾の注音符号の勉強</h1>
+<p>クリックすると音が出るよ</p>
+
+<div class="zhuyin-grid" id="zhuyinContainer"></div>
+
+<script>
+  const zhuyinList = [
+    { zhuyin: "ㄅ", pinyin: "b", jp: "バ", audio: "https://actions.google.com/sounds/v1/cartoon/clang.ogg" },
+    { zhuyin: "ㄆ", pinyin: "p", jp: "パ", audio: "https://actions.google.com/sounds/v1/cartoon/pop.ogg" },
+    { zhuyin: "ㄇ", pinyin: "m", jp: "マ", audio: "https://actions.google.com/sounds/v1/cartoon/slide_whistle_to_drum_hit.ogg" },
+    { zhuyin: "ㄈ", pinyin: "f", jp: "ファ", audio: "https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" },
+    { zhuyin: "ㄉ", pinyin: "d", jp: "ダ", audio: "https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" },
+    { zhuyin: "ㄊ", pinyin: "t", jp: "タ", audio: "https://actions.google.com/sounds/v1/cartoon/boing.ogg" },
+    { zhuyin: "ㄋ", pinyin: "n", jp: "ナ", audio: "https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" },
+    { zhuyin: "ㄌ", pinyin: "l", jp: "ラ", audio: "https://actions.google.com/sounds/v1/cartoon/pop.ogg" },
+    { zhuyin: "ㄍ", pinyin: "g", jp: "グ", audio: "https://actions.google.com/sounds/v1/cartoon/clang.ogg" },
+    { zhuyin: "ㄎ", pinyin: "k", jp: "ク", audio: "https://actions.google.com/sounds/v1/cartoon/boing.ogg" },
+    { zhuyin: "ㄏ", pinyin: "h", jp: "ハ", audio: "https://actions.google.com/sounds/v1/cartoon/pop.ogg" },
+    { zhuyin: "ㄐ", pinyin: "j", jp: "ジ", audio: "https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" },
+    { zhuyin: "ㄑ", pinyin: "q", jp: "チ", audio: "https://actions.google.com/sounds/v1/cartoon/boing.ogg" },
+    { zhuyin: "ㄒ", pinyin: "x", jp: "シ", audio: "https://actions.google.com/sounds/v1/cartoon/pop.ogg" },
+    { zhuyin: "ㄓ", pinyin: "zh", jp: "ヂ", audio: "https://actions.google.com/sounds/v1/cartoon/clang.ogg" },
+    { zhuyin: "ㄔ", pinyin: "ch", jp: "チ", audio: "https://actions.google.com/sounds/v1/cartoon/boing.ogg" },
+    { zhuyin: "ㄕ", pinyin: "sh", jp: "シ", audio: "https://actions.google.com/sounds/v1/cartoon/pop.ogg" },
+    { zhuyin: "ㄖ", pinyin: "r", jp: "ル（巻き舌）", audio: "https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" },
+    { zhuyin: "ㄗ", pinyin: "z", jp: "ズ", audio: "https://actions.google.com/sounds/v1/cartoon/boing.ogg" },
+    { zhuyin: "ㄘ", pinyin: "c", jp: "ツァ", audio: "https://actions.google.com/sounds/v1/cartoon/pop.ogg" },
+    { zhuyin: "ㄙ", pinyin: "s", jp: "ス", audio: "https://actions.google.com/sounds/v1/cartoon/clang.ogg" }
+  ];
+
+  const container = document.getElementById("zhuyinContainer");
+
+  zhuyinList.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="zhuyin">${item.zhuyin}</div>
+      <div class="pinyin">${item.pinyin}</div>
+      <div class="jp">${item.jp}</div>
+    `;
+
+    card.addEventListener("click", () => {
+      const audio = new Audio(item.audio);
+      audio.play();
+    });
+
+    container.appendChild(card);
+  });
+</script>
+
+</body>
+</html>
