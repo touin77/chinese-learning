@@ -1,82 +1,114 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <title>學台灣注音</title>
+  <title>台湾注音の学習ツール</title>
   <style>
-    body { font-family: "Microsoft JhengHei", Arial, sans-serif; padding: 20px; background: #fff8e1; }
-    h1 { color: #f57c00; }
-    .zhuyin-grid {
-      display: flex; flex-wrap: wrap; gap: 20px; max-width: 800px;
-    }
-    .card {
-      width: 100px; padding: 10px;
-      background: #ffecb3;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    .card:hover {
-      background-color: #ffd54f;
-    }
-    .zhuyin { font-size: 40px; }
-    .pinyin { font-size: 18px; color: #444; }
-    .jp { font-size: 16px; color: #666; }
+    body { font-family: sans-serif; text-align: center; padding: 20px; }
+    .bpmf-block { display: inline-block; margin: 10px; }
+    .btn { padding: 10px 15px; font-size: 24px; display: block; }
+    .pinyin { font-size: 14px; color: gray; margin-top: 5px; }
+    .quiz-section { margin-top: 30px; }
   </style>
 </head>
 <body>
 
-<h1>台湾の注音符号の勉強</h1>
-<p>クリックすると音が出るよ</p>
+  <h1>台湾注音の学習ツール</h1>
+  <div id="bopomofo-buttons"></div>
 
-<div class="zhuyin-grid" id="zhuyinContainer"></div>
+  <div class="quiz-section">
+    <h2>小テスト</h2>
+    <p id="quiz-question">「試験スタート」を押してください</p>
+    <div id="quiz-options"></div>
+    <button onclick="startQuiz()">試験スタート</button>
+    <p id="quiz-result"></p>
+  </div>
 
-<script>
-  const zhuyinList = [
-    { zhuyin: "ㄅ", pinyin: "b", jp: "バ", audio: "https://actions.google.com/sounds/v1/cartoon/clang.ogg" },
-    { zhuyin: "ㄆ", pinyin: "p", jp: "パ", audio: "https://actions.google.com/sounds/v1/cartoon/pop.ogg" },
-    { zhuyin: "ㄇ", pinyin: "m", jp: "マ", audio: "https://actions.google.com/sounds/v1/cartoon/slide_whistle_to_drum_hit.ogg" },
-    { zhuyin: "ㄈ", pinyin: "f", jp: "ファ", audio: "https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" },
-    { zhuyin: "ㄉ", pinyin: "d", jp: "ダ", audio: "https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" },
-    { zhuyin: "ㄊ", pinyin: "t", jp: "タ", audio: "https://actions.google.com/sounds/v1/cartoon/boing.ogg" },
-    { zhuyin: "ㄋ", pinyin: "n", jp: "ナ", audio: "https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" },
-    { zhuyin: "ㄌ", pinyin: "l", jp: "ラ", audio: "https://actions.google.com/sounds/v1/cartoon/pop.ogg" },
-    { zhuyin: "ㄍ", pinyin: "g", jp: "グ", audio: "https://actions.google.com/sounds/v1/cartoon/clang.ogg" },
-    { zhuyin: "ㄎ", pinyin: "k", jp: "ク", audio: "https://actions.google.com/sounds/v1/cartoon/boing.ogg" },
-    { zhuyin: "ㄏ", pinyin: "h", jp: "ハ", audio: "https://actions.google.com/sounds/v1/cartoon/pop.ogg" },
-    { zhuyin: "ㄐ", pinyin: "j", jp: "ジ", audio: "https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" },
-    { zhuyin: "ㄑ", pinyin: "q", jp: "チ", audio: "https://actions.google.com/sounds/v1/cartoon/boing.ogg" },
-    { zhuyin: "ㄒ", pinyin: "x", jp: "シ", audio: "https://actions.google.com/sounds/v1/cartoon/pop.ogg" },
-    { zhuyin: "ㄓ", pinyin: "zh", jp: "ヂ", audio: "https://actions.google.com/sounds/v1/cartoon/clang.ogg" },
-    { zhuyin: "ㄔ", pinyin: "ch", jp: "チ", audio: "https://actions.google.com/sounds/v1/cartoon/boing.ogg" },
-    { zhuyin: "ㄕ", pinyin: "sh", jp: "シ", audio: "https://actions.google.com/sounds/v1/cartoon/pop.ogg" },
-    { zhuyin: "ㄖ", pinyin: "r", jp: "ル（巻き舌）", audio: "https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" },
-    { zhuyin: "ㄗ", pinyin: "z", jp: "ズ", audio: "https://actions.google.com/sounds/v1/cartoon/boing.ogg" },
-    { zhuyin: "ㄘ", pinyin: "c", jp: "ツァ", audio: "https://actions.google.com/sounds/v1/cartoon/pop.ogg" },
-    { zhuyin: "ㄙ", pinyin: "s", jp: "ス", audio: "https://actions.google.com/sounds/v1/cartoon/clang.ogg" }
-  ];
+  <script>
+    // 注音と拼音
+    const bopomofoList = [
+      { char: 'ㄅ', pinyin: 'b' }, { char: 'ㄆ', pinyin: 'p' }, { char: 'ㄇ', pinyin: 'm' }, { char: 'ㄈ', pinyin: 'f' },
+      { char: 'ㄉ', pinyin: 'd' }, { char: 'ㄊ', pinyin: 't' }, { char: 'ㄋ', pinyin: 'n' }, { char: 'ㄌ', pinyin: 'l' },
+      { char: 'ㄍ', pinyin: 'g' }, { char: 'ㄎ', pinyin: 'k' }, { char: 'ㄏ', pinyin: 'h' }, { char: 'ㄐ', pinyin: 'j' },
+      { char: 'ㄑ', pinyin: 'q' }, { char: 'ㄒ', pinyin: 'x' }, { char: 'ㄓ', pinyin: 'zh' }, { char: 'ㄔ', pinyin: 'ch' },
+      { char: 'ㄕ', pinyin: 'sh' }, { char: 'ㄖ', pinyin: 'r' }, { char: 'ㄗ', pinyin: 'z' }, { char: 'ㄘ', pinyin: 'c' },
+      { char: 'ㄙ', pinyin: 's' }, { char: 'ㄧ', pinyin: 'yi' }, { char: 'ㄨ', pinyin: 'wu' }, { char: 'ㄩ', pinyin: 'yu' },
+      { char: 'ㄚ', pinyin: 'a' }, { char: 'ㄛ', pinyin: 'o' }, { char: 'ㄜ', pinyin: 'e' }, { char: 'ㄝ', pinyin: 'ê' },
+      { char: 'ㄞ', pinyin: 'ai' }, { char: 'ㄟ', pinyin: 'ei' }, { char: 'ㄠ', pinyin: 'ao' }, { char: 'ㄡ', pinyin: 'ou' },
+      { char: 'ㄢ', pinyin: 'an' }, { char: 'ㄣ', pinyin: 'en' }, { char: 'ㄤ', pinyin: 'ang' }, { char: 'ㄥ', pinyin: 'eng' },
+      { char: 'ㄦ', pinyin: 'er' }
+    ];
 
-  const container = document.getElementById("zhuyinContainer");
+    const buttonContainer = document.getElementById("bopomofo-buttons");
 
-  zhuyinList.forEach(item => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-      <div class="zhuyin">${item.zhuyin}</div>
-      <div class="pinyin">${item.pinyin}</div>
-      <div class="jp">${item.jp}</div>
-    `;
+    // 建立按鈕與拼音
+    bopomofoList.forEach(item => {
+      const block = document.createElement("div");
+      block.className = "bpmf-block";
 
-    card.addEventListener("click", () => {
-      const audio = new Audio(item.audio);
-      audio.play();
+      const btn = document.createElement("button");
+      btn.innerText = item.char;
+      btn.className = "btn";
+      btn.onclick = () => speak(item.char);
+      block.appendChild(btn);
+
+      const pinyin = document.createElement("div");
+      pinyin.className = "pinyin";
+      pinyin.innerText = item.pinyin;
+      block.appendChild(pinyin);
+
+      buttonContainer.appendChild(block);
     });
 
-    container.appendChild(card);
-  });
-</script>
+    // 使用SpeechSynthesis唸出注音
+    function speak(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'zh-TW';
+      speechSynthesis.speak(utterance);
+    }
+
+    // 小測驗功能
+    let correctAnswer = '';
+    function startQuiz() {
+      const randomIndex = Math.floor(Math.random() * bopomofoList.length);
+      correctAnswer = bopomofoList[randomIndex].char;
+      document.getElementById("quiz-question").innerText = "聞こえたものを選んでください：";
+      speak(correctAnswer);
+
+      const options = shuffle([correctAnswer, ...getRandomChoices(3, correctAnswer)]);
+      const quizOptions = document.getElementById("quiz-options");
+      quizOptions.innerHTML = '';
+      options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.innerText = option;
+        btn.className = "btn";
+        btn.onclick = () => checkAnswer(option);
+        quizOptions.appendChild(btn);
+      });
+
+      document.getElementById("quiz-result").innerText = '';
+    }
+
+    function checkAnswer(choice) {
+      const result = document.getElementById("quiz-result");
+      if (choice === correctAnswer) {
+        result.innerText = "✅ 正解！";
+      } else {
+        result.innerText = "❌ ブッブー，もう一回！";
+      }
+      setTimeout(startQuiz, 1500);
+    }
+
+    function getRandomChoices(num, excludeChar) {
+      const pool = bopomofoList.filter(item => item.char !== excludeChar);
+      const shuffled = shuffle(pool);
+      return shuffled.slice(0, num).map(item => item.char);
+    }
+
+    function shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+  </script>
 
 </body>
 </html>
