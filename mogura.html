@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>モグラたたきゲーム</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+    }
+    h1 {
+      margin-top: 20px;
+    }
+    #game-board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      gap: 10px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    .hole {
+      width: 100px;
+      height: 100px;
+      background-color: #ccc;
+      border-radius: 10px;
+      position: relative;
+      cursor: pointer;
+    }
+    .mole {
+      width: 80px;
+      height: 80px;
+      background: url('https://openclipart.org/image/400px/svg_to_png/282121/mole.png') no-repeat center/contain;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+    #score, #timer {
+      font-size: 1.5em;
+      margin: 10px;
+    }
+    #start-btn {
+      padding: 10px 20px;
+      font-size: 1em;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>モグラたたきゲーム</h1>
+  <div id="score">得点：0</div>
+  <div id="timer">残り時間：30 秒</div>
+  <button id="start-btn">ゲームを開始</button>
+  <div id="game-board">
+    <div class="hole" id="hole0"></div>
+    <div class="hole" id="hole1"></div>
+    <div class="hole" id="hole2"></div>
+    <div class="hole" id="hole3"></div>
+    <div class="hole" id="hole4"></div>
+    <div class="hole" id="hole5"></div>
+    <div class="hole" id="hole6"></div>
+    <div class="hole" id="hole7"></div>
+    <div class="hole" id="hole8"></div>
+  </div>
+
+  <!-- 音效 -->
+  <audio id="hit-sound" src="https://www.soundjay.com/button/sounds/button-16.mp3" preload="auto"></audio>
+
+  <script>
+    const holes = document.querySelectorAll('.hole');
+    const scoreDisplay = document.getElementById('score');
+    const timerDisplay = document.getElementById('timer');
+    const startBtn = document.getElementById('start-btn');
+    const hitSound = document.getElementById('hit-sound');
+
+    let score = 0;
+    let timeLeft = 30;
+    let moleTimer;
+    let gameTimer;
+
+    function randomHole() {
+      holes.forEach(h => h.innerHTML = '');
+      const index = Math.floor(Math.random() * holes.length);
+      const mole = document.createElement('div');
+      mole.classList.add('mole');
+      mole.onclick = () => {
+        score++;
+        scoreDisplay.textContent = `得点：${score}`;
+        hitSound.currentTime = 0;
+        hitSound.play();
+        mole.remove();
+      };
+      holes[index].appendChild(mole);
+    }
+
+    function startGame() {
+      score = 0;
+      timeLeft = 30;
+      scoreDisplay.textContent = `得点：${score}`;
+      timerDisplay.textContent = `残り時間：${timeLeft} 秒`;
+      startBtn.disabled = true;
+      moleTimer = setInterval(randomHole, 800);
+      gameTimer = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = `残り時間：${timeLeft} 秒`;
+        if (timeLeft <= 0) {
+          clearInterval(moleTimer);
+          clearInterval(gameTimer);
+          holes.forEach(h => h.innerHTML = '');
+          alert(`ゲーム終了！あなたの得点は：${score} 点`);
+          startBtn.disabled = false;
+        }
+      }, 1000);
+    }
+
+    startBtn.addEventListener('click', startGame);
+  </script>
+</body>
+</html>
